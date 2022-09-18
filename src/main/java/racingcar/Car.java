@@ -1,41 +1,45 @@
 package racingcar;
 
-import java.util.StringJoiner;
-
 /**
  * @author gutenlee
- * @since 2022/09/04
+ * @since 2022/09/14
  */
 public class Car {
-    private String name;
-    private int currentPosition;
+
+    private Name name;
+    private final Position position;
+
 
     public Car(String name) {
-        if (name.length() > 5)
-            throw new RuntimeException();
-        this.name = name;
-        this.currentPosition = 1;
+        this(name, 0);
     }
 
-    public void move(int moveForwardCondition){
-        if (moveForwardCondition >= 4)
-            currentPosition++;
+    public Car(String name, int position) {
+        this.name = new Name(name);
+        this.position = new Position(position);
     }
 
-    public int getCurrentPosition() {
-        return currentPosition;
+
+    public void move(MovingStrategy movingStrategy) {
+        if (movingStrategy.movable())
+            position.move();
     }
 
-    public String getName() {
+    public boolean isWinner(Position maxPosition) {
+        return this.position.isSame(maxPosition);
+    }
+
+    public Name getName() {
         return name;
     }
 
-    @Override
-    public String toString() {
-        StringJoiner sj = new StringJoiner("");
-        for (int i = 1; i <= this.currentPosition; i++) {
-            sj.add("-");
-        }
-        return this.name + " : " + sj.toString();
+    public int getPosition() {
+        return position.getPosition();
+    }
+
+    public Position getMaxPosition(Position maxPosition) {
+        if (position.lessThan(maxPosition))
+            return maxPosition;
+        return this.position;
     }
 }
